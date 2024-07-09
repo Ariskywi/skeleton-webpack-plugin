@@ -41,16 +41,22 @@ function traverse(options) {
             type.shapeOpposite = Array.from($$(type.shapeOpposite.join(',')))
         }
     })
-
+        // 递归遍历DOM树，将DOM分类成文本块、按钮块、图片块、SVG块、伪类元素块等。
+        // ele 为 document.documentElement; 递归遍历DOM树
         ; (function preTraverse(ele) {
+            // styles为元素中所有可用的css属性列表
             const styles = getComputedStyle(ele)
+            // 检查元素是否有伪元素
             const hasPseudoEle = checkHasPseudoEle(ele)
+            // 判断元素是否在可视区域内（是否是首屏元素），非首屏元素将要移除
             if (!inViewPort(ele) || DISPLAY_NONE.test(ele.getAttribute('style'))) {
                 return toRemove.push(ele)
             }
+            // 自定义要处理为色块的元素
             if (~grayEle.indexOf(ele)) { // eslint-disable-line no-bitwise
                 return grayBlocks.push(ele)
             }
+            // 自定义不需要处理为骨架的元素
             if (~excludesEle.indexOf(ele)) return false // eslint-disable-line no-bitwise
 
             if (hasPseudoEle) {
@@ -60,10 +66,11 @@ function traverse(options) {
             if (checkHasBorder(styles)) {
                 ele.style.border = 'none'
             }
-
+            // 列表元素统一处理为默认样式
             if (ele.children.length > 0 && /UL|OL/.test(ele.tagName)) {
                 handler.list(ele)
             }
+            // 有子节点遍历处理
             if (ele.children && ele.children.length > 0) {
                 Array.from(ele.children).forEach(child => preTraverse(child))
             }
@@ -72,6 +79,7 @@ function traverse(options) {
             if (ele.childNodes && Array.from(ele.childNodes).some(n => n.nodeType === Node.TEXT_NODE)) {
                 transparent(ele)
             }
+            // 统一文本下划线的颜色
             if (checkHasTextDecoration(styles)) {
                 ele.style.textDecorationColor = TRANSPARENT
             }
@@ -79,9 +87,11 @@ function traverse(options) {
             if (ele.tagName === 'svg') {
                 return svgs.push(ele)
             }
+            // 有背景色或背景图的元素
             if (EXT_REG.test(styles.background) || EXT_REG.test(styles.backgroundImage)) {
                 return hasImageBackEles.push(ele)
             }
+            // 背景渐变元素
             if (GRADIENT_REG.test(styles.background) || GRADIENT_REG.test(styles.backgroundImage)) {
                 return gradientBackEles.push(ele)
             }
@@ -103,7 +113,7 @@ function traverse(options) {
                 return texts.push(ele)
             }
         }(rootElement))
-
+    //将分类好的文本块、图片块等处理生成骨架结构代码
     svgs.forEach(e => handler.svg(e, svg, cssUnit, decimal))
     texts.forEach(e => handler.text(e, text, cssUnit, decimal))
     buttons.forEach(e => handler.button(e, button))

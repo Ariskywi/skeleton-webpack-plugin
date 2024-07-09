@@ -1,6 +1,11 @@
 import { getComputedStyle, px2relativeUtil, getTextWidth, setOpacity, addClassName } from '../util'
 import { addStyle } from './styleCache'
 import { CLASS_NAME_PREFEX } from '../config'
+//文本块处理骨架结构
+//文本块相对处理起来会比较复杂些，所以放到最后来讲。
+//文本块定义：任何包含文本节点的元素都是文本块。
+//计算文本块的文本行数、文字高度（即要绘制的文本块高度=fontSize）：计算文本行数 （ 元素高度 - 上下padding ） / 行高
+//计算文本高度比 = 字体高度/行高（默认1 / 1.4）
 
 function addTextMask(paragraph, {
     textAlign,
@@ -89,14 +94,15 @@ function textHandler(ele, { color }, cssUnit, decimal) {
     const position = ['fixed', 'absolute', 'flex'].find(p => p === pos) ? pos : 'relative'
 
     const height = ele.offsetHeight
-    // Math.floor
+    //  文本行数 =（ 高度 - 上下padding ） / 行高 Math.floor
     const lineCount = (height - parseFloat(paddingTop, 10) - parseFloat(paddingBottom, 10)) / parseFloat(lineHeight, 10) | 0 // eslint-disable-line no-bitwise
-
+    // 文本高度比 = 字体高度/行高
     let textHeightRatio = parseFloat(fontSize, 10) / parseFloat(lineHeight, 10)
     if (Number.isNaN(textHeightRatio)) {
         textHeightRatio = 1 / 1.4 // default number
     }
     /* eslint-disable no-mixed-operators */
+    //通过线性渐变生成条纹背景的文本块
     const firstColorPoint = ((1 - textHeightRatio) / 2 * 100).toFixed(decimal)
     const secondColorPoint = (((1 - textHeightRatio) / 2 + textHeightRatio) * 100).toFixed(decimal)
     const backgroundSize = `100% ${px2relativeUtil(lineHeight, cssUnit, decimal)}`
@@ -132,6 +138,7 @@ function textHandler(ele, { color }, cssUnit, decimal) {
             wordBreak,
             wordSpacing
         })
+        //单行文本需要计算文本宽度和text-aligin属性
         const textWidthPercent = textWidth / (width - parseInt(paddingRight, 10) - parseInt(paddingLeft, 10))
         ele.style.backgroundSize = `${(textWidthPercent > 1 ? 1 : textWidthPercent) * 100}% ${px2relativeUtil(lineHeight, cssUnit, decimal)}`
         switch (textAlign) {

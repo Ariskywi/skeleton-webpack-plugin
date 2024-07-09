@@ -1,10 +1,20 @@
 'use strict'
 
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-undef */
+
+/**
+ * * 操纵浏览器 这点跟Html-entry不一样,因为我们要等到整个项目运行完渲染完我们再去拿
+ */
 const puppeteer = require('puppeteer')
 const devices = require('puppeteer/DeviceDescriptors')
 const { parse, toPlainObject, fromPlainObject, generate } = require('css-tree')
 const { sleep, genScriptContent, htmlMinify, collectImportantComments } = require('./util')
 
+/**
+ * ! Skeleton类主要封装了生成骨架屏代码的操作
+ * ! 借助puppeteer
+ */
 class Skeleton {
     constructor(options = {}, log) {
         this.options = options
@@ -50,8 +60,11 @@ class Skeleton {
     // Generate the skeleton screen for the specific `page`
     async makeSkeleton(page) {
         const { defer } = this.options
+        // 把生成骨架屏代码注入puppeteer同时执行初始化
         await page.addScriptTag({ content: this.scriptContent })
+        // 延迟逻辑，用于等待某些异步操作
         await sleep(defer)
+        // 执行genSkeleton方法
         await page.evaluate((options) => {
             Skeleton.genSkeleton(options)
         }, this.options)
@@ -127,7 +140,7 @@ class Skeleton {
             throw new Error(`${response.status} on ${url}`)
         }
 
-
+        // 开始build骨架屏
         await this.makeSkeleton(page)
 
         const { styles, cleanedHtml } = await page.evaluate(() => Skeleton.getHtmlAndStyle())
