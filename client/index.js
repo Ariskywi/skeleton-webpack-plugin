@@ -11,82 +11,82 @@ const port = window._pageSkeletonSocketPort // eslint-disable-line no-underscore
 const sock = new SockJS(`http://localhost:${port}/socket`)
 const vm = createView(sock)
 
-sock.onopen = function() {
-  log('connected')
-  sock.send(JSON.stringify({open: 'test'}))
+sock.onopen = function () {
+    log('connected')
+    sock.send(JSON.stringify({ open: 'test' }))
 }
 // 用于调试
 window.sock = sock
 
-sock.onmessage = function(e) {
-  const { type, data } = JSON.parse(e.data)
-  switch (type) {
-  case 'success': {
-    vm.$data.text = data
-    // window.open(data)
-    log(data)
-    break
-  }
-  case 'console': {
-    log(data)
-    break
-  }
-  case 'error': {
-    log(data, 'error')
-    break
-  }
-  }
+sock.onmessage = function (e) {
+    const { type, data } = JSON.parse(e.data)
+    switch (type) {
+        case 'success': {
+            vm.$data.text = data
+            // window.open(data)
+            log(data)
+            break
+        }
+        case 'console': {
+            log(data)
+            break
+        }
+        case 'error': {
+            log(data, 'error')
+            break
+        }
+    }
 }
 
-sock.onclose = function() {
-  log('close')
-  sock.close()
+sock.onclose = function () {
+    log('close')
+    sock.close()
 }
 
 function createView(sock) {
-  const rootEle = document.createElement('div')
-  document.body.appendChild(rootEle)
+    const rootEle = document.createElement('div')
+    document.body.appendChild(rootEle)
 
-  return new Vue({
-    components: {
-      Console
-    },
-    el: rootEle,
-    data: {
-      show: false,
-      title: 'P',
-      text: 'Preview skeleton page'
-    },
-    template: '<Console :show="show" :title="title" :text="text" @pclick="handleClick"></Console>',
-    created() {
-      this.$nextTick(() => {
-        const self = this
-        Object.defineProperty(window, 'toggleBar', {
-          enumerable: false,
-          configrable: true,
-          get() {
-            self.show = !self.show
-            log('toggle the preview control bar.')
-            return '🐶'
-          }
-        })
+    return new Vue({
+        components: {
+            Console
+        },
+        el: rootEle,
+        data: {
+            show: false,
+            title: 'P',
+            text: 'Preview skeleton page'
+        },
+        template: '<Console :show="show" :title="title" :text="text" @pclick="handleClick"></Console>',
+        created() {
+            this.$nextTick(() => {
+                const self = this
+                Object.defineProperty(window, 'toggleBar', {
+                    enumerable: false,
+                    configrable: true,
+                    get() {
+                        self.show = !self.show
+                        log('toggle the preview control bar.')
+                        return '🐶'
+                    }
+                })
 
-        document.body.addEventListener('keydown', e => {
-          const keyCode = e.keyCode || e.which || e.charCode
-          const ctrlKey = e.ctrlKey || e.metaKey
-          if (ctrlKey && keyCode === 13) {
-            this.show = !this.show
-          }
-        })
-      })
-    },
-    methods: {
-      handleClick() {
-        this.text = 'IN PROGRESS...'
-        sock.send(JSON.stringify({ type: 'generate', data: window.location.origin }))
-      }
-    }
-  })
+                document.body.addEventListener('keydown', e => {
+                    const keyCode = e.keyCode || e.which || e.charCode
+                    const ctrlKey = e.ctrlKey || e.metaKey
+                    if (ctrlKey && keyCode === 13) {
+                        this.show = !this.show
+                    }
+                })
+            })
+        },
+        methods: {
+            handleClick() {
+                this.text = 'IN PROGRESS...'
+                sock.send(JSON.stringify({ type: 'generate', data: window.location.origin }))
+            }
+        }
+    })
 }
 
 

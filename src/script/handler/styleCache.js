@@ -8,19 +8,19 @@ const styleCache = new Map()
 
 // some common styles
 export const shapeStyle = (shape) => {
-  const selector = `.${CLASS_NAME_PREFEX + shape}`
-  const rule = `{
+    const selector = `.${CLASS_NAME_PREFEX + shape}`
+    const rule = `{
     border-radius: ${shape === 'rect' ? '0' : '50%'};
   }`
-  if (!styleCache.has(selector)) {
-    styleCache.set(selector, rule)
-  }
+    if (!styleCache.has(selector)) {
+        styleCache.set(selector, rule)
+    }
 }
 
 export const addStyle = (selector, rule) => {
-  if (!styleCache.has(selector)) {
-    styleCache.set(selector, rule)
-  }
+    if (!styleCache.has(selector)) {
+        styleCache.set(selector, rule)
+    }
 }
 
 export default styleCache

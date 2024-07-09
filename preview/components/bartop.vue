@@ -17,7 +17,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="(route, i) of dropDownRoutes" :key="i" :command="route">{{ route.url }}</el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>      
+          </el-dropdown>
         </div>
         <el-button type="success" icon="el-icon-mobile-phone" circle
           @click="preview"

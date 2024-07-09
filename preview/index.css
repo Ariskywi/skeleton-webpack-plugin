@@ -1,18 +1,23 @@
 .icon {
-  width: 1em; height: 1em;
-  vertical-align: -0.15em;
-  fill: currentColor;
-  overflow: hidden;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
 }
+
 .v-modal {
-  background: #fff;
+    background: #fff;
 }
+
 .el-dialog {
-  box-shadow: none;
+    box-shadow: none;
 }
+
 .el-dialog__body {
-  padding-top: 0;
+    padding-top: 0;
 }
+
 .edit-panel .CodeMirror {
-  height: calc(100vh - 66px);
+    height: calc(100vh - 66px);
 }

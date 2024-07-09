@@ -8,12 +8,12 @@ import svg from './svg'
 import text from './text'
 
 export {
-  list,
-  background,
-  button,
-  grayBlock,
-  image,
-  pseudos,
-  svg,
-  text
+    list,
+    background,
+    button,
+    grayBlock,
+    image,
+    pseudos,
+    svg,
+    text
 }
