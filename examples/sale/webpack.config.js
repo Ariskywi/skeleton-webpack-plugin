@@ -116,9 +116,9 @@ module.exports = {
         url: 'https://h5.ele.me'
       }],
       noInfo: false,
-      storagies: {
-        test: '1234'
-      }
+      // storagies: {
+      //   test: '1234'
+      // }
     }),
   ],
   resolve: {
