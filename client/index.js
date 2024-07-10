@@ -1,9 +1,11 @@
 'use strict'
 
 import SockJS from 'sockjs-client'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import Vue from 'vue/dist/vue.esm'
 import { log } from './utils'
-import Console from './components/console/index.vue'
+import Console from './components/console/index.js'
 
 // port 7890
 const port = window._pageSkeletonSocketPort // eslint-disable-line no-underscore-dangle
@@ -11,7 +13,8 @@ const port = window._pageSkeletonSocketPort // eslint-disable-line no-underscore
 // TODO headless 打开的页面不连接 socket
 const sock = new SockJS(`http://localhost:${port}/socket`)
 
-const vm = createView(sock)
+// const vm = createView(sock)
+createView(sock)
 
 sock.onopen = function () {
     log('connected')
@@ -26,7 +29,7 @@ sock.onmessage = function (e) {
     console.log('data===>', data)
     switch (type) {
         case 'success': {
-            vm.$data.text = data
+            //vm.$data.text = data
             // window.open(data)
             log(data)
             break
@@ -51,48 +54,85 @@ function createView(sock) {
     const rootEle = document.createElement('div')
     document.body.appendChild(rootEle)
 
-    return new Vue({
-        components: {
-            Console
-        },
-        el: rootEle,
-        data: {
-            show: false,
-            title: 'P',
-            text: 'Preview skeleton page'
-        },
-        template: '<Console :show="show" :title="title" :text="text" @pclick="handleClick"></Console>',
-        created() {
-            this.$nextTick(() => {
-                const self = this
-                // ! 当访问全局对象toggleBar开启骨架屏页面
-                Object.defineProperty(window, 'toggleBar', {
-                    enumerable: false,
-                    configrable: true,
-                    get() {
-                        self.show = !self.show
-                        log('toggle the preview control bar.')
-                        return '🐶'
-                    }
-                })
-                // ! 设置快捷键开启骨架屏页面
-                document.body.addEventListener('keydown', e => {
-                    const keyCode = e.keyCode || e.which || e.charCode
-                    const ctrlKey = e.ctrlKey || e.metaKey
-                    if (ctrlKey && keyCode === 13) {
-                        this.show = !this.show
-                    }
-                })
-            })
-        },
-        methods: {
-            handleClick() {
-                this.text = 'IN PROGRESS...'
-                // ! 点击开关按钮发送socket
-                sock.send(JSON.stringify({ type: 'generate', data: window.location.origin }))
-            }
+    // return new Vue({
+    //     components: {
+    //         Console
+    //     },
+    //     el: rootEle,
+    //     data: {
+    //         show: false,
+    //         title: 'P',
+    //         text: 'Preview skeleton page'
+    //     },
+    //     template: '<Console :show="show" :title="title" :text="text" @pclick="handleClick"></Console>',
+    //     created() {
+    //         this.$nextTick(() => {
+    //             const self = this
+    //             // ! 当访问全局对象toggleBar开启骨架屏页面
+    //             Object.defineProperty(window, 'toggleBar', {
+    //                 enumerable: false,
+    //                 configrable: true,
+    //                 get() {
+    //                     self.show = !self.show
+    //                     log('toggle the preview control bar.')
+    //                     return '🐶'
+    //                 }
+    //             })
+    //             // ! 设置快捷键开启骨架屏页面
+    //             document.body.addEventListener('keydown', e => {
+    //                 const keyCode = e.keyCode || e.which || e.charCode
+    //                 const ctrlKey = e.ctrlKey || e.metaKey
+    //                 if (ctrlKey && keyCode === 13) {
+    //                     this.show = !this.show
+    //                 }
+    //             })
+    //         })
+    //     },
+    //     methods: {
+    //         handleClick() {
+    //             this.text = 'IN PROGRESS...'
+    //             // ! 点击开关按钮发送socket
+    //             sock.send(JSON.stringify({ type: 'generate', data: window.location.origin }))
+    //         }
+    //     }
+    // })
+    const TitleView = () => {
+        const [show, setShow] = useState(false);
+        const [title, setTitle] = useState('P');
+        const [text, setText] = useState('Preview skeleton page');
+        const handleClick = () => {
+            setText('IN PROGRESS...')
+            // ! 点击开关按钮发送socket
+            sock.send(JSON.stringify({ type: 'generate', data: window.location.origin }))
         }
-    })
+        useEffect(() => {
+            const self = this
+            // ! 当访问全局对象toggleBar开启骨架屏页面
+            Object.defineProperty(window, 'toggleBar', {
+                enumerable: false,
+                configrable: true,
+                get() {
+                    self.show = !self.show
+                    log('toggle the preview control bar.')
+                    return '🐶'
+                }
+            })
+            // ! 设置快捷键开启骨架屏页面
+            document.body.addEventListener('keydown', e => {
+                const keyCode = e.keyCode || e.which || e.charCode
+                const ctrlKey = e.ctrlKey || e.metaKey
+                if (ctrlKey && keyCode === 13) {
+                    this.show = !this.show
+                }
+            })
+        }, [])
+        return (
+            <Console show={show} title={title} text={text} pclick={() => {
+                handleClick()
+            }} ></Console >
+        )
+    }
+    ReactDOM.render(TitleView, rootEle);
 }
 
 

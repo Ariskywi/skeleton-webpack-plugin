@@ -5,11 +5,11 @@ module.exports = {
     mode: 'development',
     module: {
         rules: [{
-            test: /\.js$/,
+            test: /\.js\.jsx$/,
             use: {
                 loader: 'babel-loader',
                 options: {
-                    presets: ['env']
+                    presets: [require.resolve('babel-preset-react-app')]
                 }
             }
         }, {
