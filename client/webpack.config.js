@@ -5,13 +5,10 @@ module.exports = {
     mode: 'development',
     module: {
         rules: [{
-            test: /\.js\.jsx$/,
+            test: /.(js|jsx|ts|tsx)$/, // 匹配.ts, tsx文件
             use: {
-                loader: 'babel-loader',
-                options: {
-                    presets: [require.resolve('babel-preset-react-app')]
-                }
-            }
+                loader: 'babel-loader'
+            },
         }, {
             test: /\.css$/,
             use: [
