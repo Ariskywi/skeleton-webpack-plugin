@@ -9,15 +9,16 @@ import './index.css';
 //     </React.StrictMode>
 // );
 const Console = (props) => {
-    const { title, text, show, pclick } = props;
+    const { title, text, show, onPClick } = props;
+    console.log("show:" + show)
     return (
         <div
-            className={["sk-console"].join([show ? 'show' : ''])}>
-            <div class="button-wrapper" onClick={() => pclick()} >
+            className={`sk-console ${show ? "show" : ''}`}>
+            <div class="button-wrapper" onClick={() => onPClick()} >
                 {text}
                 < a href="javascript:;" > {title}</a >
             </div >
-        </div>
+        </div >
     )
 }
 
