@@ -1,9 +1,9 @@
 'use strict'
 
 import SockJS from 'sockjs-client'
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Vue from 'vue/dist/vue.esm'
+// import Vue from 'vue/dist/vue.esm'
 import { log } from './utils'
 import Console from './components/console/index.js'
 

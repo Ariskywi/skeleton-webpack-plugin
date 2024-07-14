@@ -1,0 +1,29 @@
+.modal-title, .image-wrapper {
+    text-align: center;
+  }
+  .container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #f9f9f9;
+  }
+  .main {
+    margin-top: 66px;
+    display: flex;
+  }
+  .left {
+    flex: 0;
+    flex-shrink: 0;
+    margin: 20px;
+    margin-right: 0;
+  }
+  .middle {
+    flex: 0;
+    flex-shrink: 0;
+    margin: 20px;
+  }
+  .right {
+    flex: 1;
+  }
